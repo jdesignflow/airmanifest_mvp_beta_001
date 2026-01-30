@@ -1,0 +1,6 @@
+[
+    {"airline": "Air Canada", "base_price": 450, "duration": 340, "provider": "Expedia"},
+    {"airline": "WestJet", "base_price": 420, "duration": 360, "provider": "Trip.com"},
+    {"airline": "Lufthansa", "base_price": 890, "duration": 600, "provider": "FlightNetwork"},
+    {"airline": "British Airways", "base_price": 950, "duration": 580, "provider": "Orbitz"}
+]

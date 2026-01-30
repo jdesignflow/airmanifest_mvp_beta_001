@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="neo-card text-center">
+            <h2>Search Flights</h2>
+            <p class="text-muted">Find the best deals across the globe.</p>
+            
+            <form action="{{ url_for('traveler.search') }}" method="post" class="mt-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" name="origin" class="neo-input" placeholder="Origin (e.g. JFK)" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" name="destination" class="neo-input" placeholder="Destination (e.g. LHR)" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="date" name="date" class="neo-input" required>
+                    </div>
+                </div>
+                <button type="submit" class="neo-btn mt-3">Find Flights</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

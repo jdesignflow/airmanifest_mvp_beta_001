@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="fw-light">Hello, <span style="color: var(--accent);">{{ g.user.first_name }}</span></h2>
+        <p class="text-muted">Here is what's happening with your flights.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="neo-card text-center py-4">
+            <h1 class="display-4 fw-bold">{{ watch_count }}</h1>
+            <p class="text-muted mb-0">Active Watches</p>
+            <a href="{{ url_for('traveler.watchlist') }}" class="btn btn-sm btn-outline-light mt-3 rounded-pill">View All</a>
+        </div>
+        <div class="neo-card text-center py-4 mt-3">
+            <a href="{{ url_for('traveler.search') }}" class="neo-btn d-block">
+                + New Search
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <h5 class="mb-3 ms-2">Recent Alerts</h5>
+        {% if notifications %}
+            {% for note in notifications %}
+            <div class="neo-card p-3 mb-3 d-flex align-items-center justify-content-between">
+                <div>
+                    <small class="text-muted d-block">{{ note.created_at.strftime('%b %d, %H:%M') }}</small>
+                    <span>{{ note.message }}</span>
+                </div>
+                <div style="width: 10px; height: 10px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent);"></div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="neo-card p-5 text-center text-muted opacity-50">
+                <p>No new alerts. Silence is golden.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

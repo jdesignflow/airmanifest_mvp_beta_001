@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center pt-5">
+    <div class="col-md-5">
+        <div class="neo-card">
+            <h3 class="text-center mb-4">Welcome Back</h3>
+            <form method="post">
+                <div class="mb-3">
+                    <label class="form-label text-muted small">Email Address</label>
+                    <input type="email" name="email" class="neo-input" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-muted small">Password</label>
+                    <input type="password" name="password" class="neo-input" required>
+                </div>
+                <button type="submit" class="neo-btn w-100 mt-2">Login</button>
+            </form>
+            <p class="text-center mt-3 small text-muted">
+                Don't have an account? <a href="{{ url_for('auth.register') }}" style="color: var(--accent);">Sign up</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

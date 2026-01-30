@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row align-items-center" style="min-height: 70vh;">
+    <div class="col-md-6 text-start">
+        <h1 class="display-3 fw-bold mb-4" style="color: var(--accent);">Flight Deals,<br>Detected.</h1>
+        <p class="lead mb-4">Stop refreshing airline sites. ManifestAir tracks prices 24/7 and alerts you the moment they drop.</p>
+        <div class="d-flex gap-3">
+            {% if g.user %}
+                <a href="{{ url_for('traveler.search') }}" class="neo-btn">Start Searching</a>
+            {% else %}
+                <a href="{{ url_for('auth.register') }}" class="neo-btn">Join Now</a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-link text-white">Login</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-6 text-center d-none d-md-block">
+        <div class="neo-card d-inline-block p-5" style="border-radius: 50%;">
+            <svg width="150" height="150" viewBox="0 0 24 24" fill="none" stroke="#4cc9f0" stroke-width="1.5">
+                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+        </div>
+    </div>
+</div>
+{% endblock %}
