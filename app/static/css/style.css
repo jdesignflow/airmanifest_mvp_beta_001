@@ -1,17 +1,38 @@
 :root {
-    --bg-color: #1e1e24;
-    --text-color: #e0e0e0;
-    --glass: rgba(255, 255, 255, 0.05);
+    --bg-color: #121216; /* Darker background for better contrast */
+    --card-bg: #1e1e24;
+    --text-primary: #ffffff; /* Pure white for main text */
+    --text-secondary: #b0b0b0; /* Light grey for subtitles */
+    --glass: rgba(30, 30, 36, 0.95);
     --neo-shadow-light: rgba(255, 255, 255, 0.05);
     --neo-shadow-dark: rgba(0, 0, 0, 0.5);
     --accent: #4cc9f0;
+    --accent-hover: #3db5d8;
+    --danger: #ef476f;
+    --success: #06d6a0;
 }
 
 body {
     background-color: var(--bg-color);
-    color: var(--text-color);
+    color: var(--text-primary);
     font-family: 'Poppins', sans-serif;
     overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+p, label, span, small, div {
+    color: var(--text-primary);
+}
+
+.text-muted {
+    color: var(--text-secondary) !important;
 }
 
 /* 3D Canvas Background */
@@ -22,61 +43,108 @@ body {
     width: 100%;
     height: 100%;
     z-index: -1;
-    background: radial-gradient(circle at center, #2b2b35 0%, #1a1a20 100%);
+    background: radial-gradient(circle at center, #2b2b35 0%, #121216 100%);
+}
+
+.main-content {
+    flex: 1;
 }
 
 /* Glassmorphism */
-.glass-nav, .glass-footer {
+.glass-nav {
     background: var(--glass);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
+.glass-footer {
+    background: #0f0f12;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Neomorphism Cards */
 .neo-card {
-    background: #23232a;
+    background: var(--card-bg);
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 8px 8px 16px var(--neo-shadow-dark), 
-                -8px -8px 16px var(--neo-shadow-light);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     border: 1px solid rgba(255,255,255,0.05);
-    margin-bottom: 20px;
+    transition: transform 0.3s ease;
 }
 
+.hover-lift:hover {
+    transform: translateY(-5px);
+}
+
+/* Inputs - FIXED FOR READABILITY */
 .neo-input {
-    background: #1e1e24;
-    border: none;
-    border-radius: 10px;
-    padding: 15px;
-    color: #fff;
-    box-shadow: inset 5px 5px 10px #16161a, 
-                inset -5px -5px 10px #26262e;
+    background: #2a2a35; /* Lighter than BG */
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 12px 20px;
+    color: #ffffff !important; /* Force White Text */
     width: 100%;
     margin-bottom: 15px;
 }
 
+.neo-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.neo-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: #32323e;
+    box-shadow: 0 0 15px rgba(76, 201, 240, 0.15);
+}
+
+/* Buttons */
 .neo-btn {
     background: var(--accent);
-    color: #000;
+    color: #000 !important; /* Black text on bright button */
     border: none;
-    padding: 10px 25px;
     border-radius: 50px;
-    font-weight: 600;
-    box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
-    transition: transform 0.2s;
+    font-weight: 700;
+    padding: 10px 25px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
 }
 
 .neo-btn:hover {
+    background-color: var(--accent-hover);
     transform: translateY(-2px);
-    box-shadow: 0 0 15px var(--accent);
+    box-shadow: 0 0 20px rgba(76, 201, 240, 0.4);
+    color: #000 !important;
 }
 
-.alert.neo-alert {
-    background: rgba(76, 201, 240, 0.1);
-    border: 1px solid var(--accent);
+/* Table Styling for Admin */
+.table-dark {
+    background-color: transparent;
+    color: var(--text-primary);
+}
+.table-dark th {
+    border-bottom: 2px solid var(--accent);
     color: var(--accent);
 }
+.table-dark td {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    vertical-align: middle;
+}
 
-/* Text Highlights */
-h1, h2, h3 {
-    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+/* Destination Cards */
+.destination-card {
+    border-radius: 20px;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+}
+.destination-card img {
+    transition: transform 0.5s ease;
+}
+.destination-card:hover img {
+    transform: scale(1.1);
+}
+.destination-card .card-img-overlay {
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.2) 100%);
 }

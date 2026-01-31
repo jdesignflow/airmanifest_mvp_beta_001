@@ -9,9 +9,12 @@ class Config:
     DATABASE_DB = os.environ.get('DB_NAME')
     DATABASE_SSL_CA = os.environ.get('DB_SSL_CA')
     
-    # Provider Settings
+    # External APIs
     SERPAPI_KEY = os.environ.get('SERPAPI_KEY')
     CURRENCY_API_KEY = os.environ.get('CURRENCY_API_KEY')
+    
+    # Unsplash API (Images)
+    UNSPLASH_ACCESS_KEY = os.environ.get('UNSPLASH_ACCESS_KEY', '4hpNoiAbLWN18eXDRUKt8B9TG0kMsYXGRh8TbMXvOXE')
 
 class DevelopmentConfig(Config):
     DEBUG = True

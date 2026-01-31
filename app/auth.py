@@ -20,31 +20,20 @@ def register():
         cursor = None
         error = None
 
-        # Safety Check: Ensure DB connected
         if db is None:
             error = "Database connection failed. Please check your internet or credentials."
         else:
             cursor = db.cursor(dictionary=True)
 
-        if not email:
-            error = 'Email is required.'
-        elif not password:
-            error = 'Password is required.'
-        elif not first_name:
-            error = 'First Name is required.'
-        elif not last_name:
-            error = 'Last Name is required.'
-        elif not dob:
-            error = 'Date of Birth is required.'
+        if not email or not password or not first_name or not last_name or not dob:
+            error = 'All fields are required.'
 
         if error is None and cursor:
             try:
-                # Check if user already exists
                 cursor.execute("SELECT id FROM users WHERE email = %s", (email,))
                 if cursor.fetchone() is not None:
                     error = f"User {email} is already registered."
                 else:
-                    # Insert new user with DOB
                     cursor.execute(
                         "INSERT INTO users (email, password_hash, first_name, last_name, dob) VALUES (%s, %s, %s, %s, %s)",
                         (email, generate_password_hash(password), first_name, last_name, dob),
@@ -81,6 +70,8 @@ def login():
                 session.clear()
                 session['user_id'] = user['id']
                 session['role'] = user['role']
+                
+                # Redirect based on role
                 if user['role'] == 'admin':
                     return redirect(url_for('admin.dashboard'))
                 return redirect(url_for('traveler.dashboard'))
@@ -88,6 +79,37 @@ def login():
         flash(error)
 
     return render_template('auth/login.html')
+
+@bp.route('/admin-login', methods=('GET', 'POST'))
+def admin_login():
+    """Dedicated login route for Administrators"""
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        db = get_db()
+        error = None
+        
+        if db is None:
+            error = "Database connection failed."
+        else:
+            cursor = db.cursor(dictionary=True)
+            cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+            user = cursor.fetchone()
+
+            if user is None or not check_password_hash(user['password_hash'], password):
+                error = 'Invalid admin credentials.'
+            elif user['role'] != 'admin':
+                error = 'Access Denied: You do not have administrator privileges.'
+
+            if error is None:
+                session.clear()
+                session['user_id'] = user['id']
+                session['role'] = 'admin'
+                return redirect(url_for('admin.dashboard'))
+
+        flash(error)
+
+    return render_template('auth/admin_login.html')
 
 @bp.route('/logout')
 def logout():
