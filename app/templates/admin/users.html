@@ -41,11 +41,19 @@
                     </td>
                     <td class="p-3 text-end">
                         {% if user.role != 'admin' %}
+                        
                         <form action="{{ url_for('admin.ban_user', user_id=user.id) }}" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-sm {{ 'btn-success' if user.is_banned else 'btn-outline-danger' }}">
-                                {{ 'Unban' if user.is_banned else 'Ban Access' }}
+                            <button type="submit" class="btn btn-sm {{ 'btn-success' if user.is_banned else 'btn-outline-warning' }}">
+                                {{ 'Unban' if user.is_banned else 'Ban' }}
                             </button>
                         </form>
+
+                        <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="post" class="d-inline ms-2" onsubmit="return confirm('Are you sure? This cannot be undone.');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                        
                         {% endif %}
                     </td>
                 </tr>

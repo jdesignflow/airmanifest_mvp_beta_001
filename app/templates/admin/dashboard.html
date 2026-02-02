@@ -50,6 +50,27 @@
                     <p class="text-muted small mb-0">Update "Popular Destinations" on the homepage dynamically.</p>
                 </a>
             </div>
+            
+            <div class="col-12">
+                <div class="neo-card p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="text-white">
+                                <i class="fas fa-sync-alt text-warning me-2"></i>Refresh Canadian Trends
+                            </h5>
+                            <p class="text-muted small mb-0">
+                                Update the homepage with the latest verified destination data and imagery.
+                            </p>
+                        </div>
+                        <form action="{{ url_for('admin.generate_trending') }}" method="post">
+                            <button type="submit" class="neo-btn">
+                                Sync Now
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </div>
 

@@ -1,29 +1,170 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="neo-card text-center">
-            <h2>Search Flights</h2>
-            <p class="text-muted">Find the best deals across the globe.</p>
+<div class="container py-4">
+    
+    <div class="neo-card p-4 mb-5">
+        <h2 class="fw-bold mb-4 text-center">Where to next?</h2>
+        
+        <form method="post" action="{{ url_for('traveler.search') }}">
             
-            <form action="{{ url_for('traveler.search') }}" method="post" class="mt-4">
-                <div class="row">
-                    <div class="col-md-6">
-                        <input type="text" name="origin" class="neo-input" placeholder="Origin (e.g. JFK)" required>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" name="destination" class="neo-input" placeholder="Destination (e.g. LHR)" required>
-                    </div>
+            <div class="mb-3 text-center">
+                <div class="btn-group" role="group">
+                    <input type="radio" class="btn-check" name="trip_type" id="one_way" value="one_way" 
+                           {{ 'checked' if trip_type != 'round_trip' else '' }} onclick="toggleReturnDate()">
+                    <label class="btn btn-outline-light" for="one_way">One Way</label>
+
+                    <input type="radio" class="btn-check" name="trip_type" id="round_trip" value="round_trip" 
+                           {{ 'checked' if trip_type == 'round_trip' else '' }} onclick="toggleReturnDate()">
+                    <label class="btn btn-outline-light" for="round_trip">Round Trip</label>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <input type="date" name="date" class="neo-input" required>
-                    </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="text-muted small mb-1">From</label>
+                    <input type="text" name="origin" class="form-control neo-input text-white" 
+                           placeholder="Origin (e.g. JFK)" value="{{ origin }}" required>
                 </div>
-                <button type="submit" class="neo-btn mt-3">Find Flights</button>
-            </form>
-        </div>
+
+                <div class="col-md-3">
+                    <label class="text-muted small mb-1">To</label>
+                    <input type="text" name="destination" class="form-control neo-input text-white" 
+                           placeholder="Dest (e.g. LHR)" value="{{ destination }}" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="text-muted small mb-1">Depart</label>
+                    <input type="date" name="date" class="form-control neo-input text-white" 
+                           value="{{ date }}" required>
+                </div>
+
+                <div class="col-md-3" id="return-div" style="display: none;">
+                    <label class="text-muted small mb-1">Return</label>
+                    <input type="date" name="return_date" class="form-control neo-input text-white" 
+                           value="{{ return_date }}">
+                </div>
+            </div>
+
+            <button type="submit" class="neo-btn w-100 mt-4">
+                <i class="fas fa-search me-2"></i> Search Flights
+            </button>
+        </form>
     </div>
+
+    {% if results %}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="text-white mb-0">Found {{ results|length }} Flights</h4>
+            
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="currencyToggle">
+                <label class="form-check-label text-white" for="currencyToggle">Show in CAD (C$)</label>
+            </div>
+        </div>
+        
+        {% for flight in results %}
+        <div class="neo-card p-3 mb-3 hover-effect">
+            <div class="row align-items-center">
+                
+                <div class="col-md-3 d-flex align-items-center">
+                    <img src="{{ flight.logo }}" alt="Logo" class="rounded me-3 bg-white p-1" style="width: 40px; height: 40px; object-fit: contain;">
+                    <div>
+                        <h5 class="mb-0 fw-bold">{{ flight.provider }}</h5>
+                        <small class="text-muted">{{ flight.type }}</small>
+                    </div>
+                </div>
+
+                <div class="col-md-5 text-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-start">
+                            <span class="h5 mb-0">{{ origin }}</span>
+                        </div>
+                        <div class="px-3 text-center">
+                            <small class="text-muted d-block">{{ flight.duration }}</small>
+                            <div class="progress" style="height: 2px; width: 100px;">
+                                <div class="progress-bar bg-info" role="progressbar" style="width: 100%"></div>
+                            </div>
+                            <small class="text-warning small">
+                                {{ 'Direct' if flight.stops == 0 else flight.stops ~ ' Stop(s)' }}
+                            </small>
+                        </div>
+                        <div class="text-end">
+                            <span class="h5 mb-0">{{ destination }}</span>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-muted"><i class="far fa-clock me-1"></i> {{ flight.time }}</small>
+                    </div>
+                </div>
+
+                <div class="col-md-4 text-end">
+                    <h3 class="fw-bold text-success mb-2 price-display" data-usd="{{ flight.price }}">
+                        ${{ flight.price }}
+                    </h3>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <form action="{{ url_for('traveler.watch_route') }}" method="post">
+                            <input type="hidden" name="origin" value="{{ origin }}">
+                            <input type="hidden" name="destination" value="{{ destination }}">
+                            <input type="hidden" name="price" value="{{ flight.price }}">
+                            <button type="submit" class="btn btn-outline-secondary btn-sm" title="Track Price">
+                                <i class="fas fa-bell"></i>
+                            </button>
+                        </form>
+                        
+                        <a href="{{ flight.deep_link }}" target="_blank" class="btn btn-primary btn-sm px-4">
+                            Select <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+
+    {% elif origin %}
+        <div class="text-center py-5">
+            <i class="fas fa-plane-slash fa-3x text-secondary mb-3"></i>
+            <h3>No flights found.</h3>
+            <p class="text-muted">Try changing your dates or checking the airline codes.</p>
+        </div>
+    {% endif %}
 </div>
+
+<div id="exchange-rate-data" data-rate="{{ current_rate }}"></div>
+
+<script>
+    // 1. Logic for Return Date toggle
+    function toggleReturnDate() {
+        const isRoundTrip = document.getElementById('round_trip').checked;
+        const returnDiv = document.getElementById('return-div');
+        returnDiv.style.display = isRoundTrip ? 'block' : 'none';
+    }
+
+    // 2. Logic for Currency Conversion
+    document.getElementById('currencyToggle')?.addEventListener('change', function() {
+        const isCAD = this.checked;
+        const rate = parseFloat(document.getElementById('exchange-rate-data').dataset.rate);
+        const prices = document.querySelectorAll('.price-display');
+
+        prices.forEach(el => {
+            const usdPrice = parseFloat(el.dataset.usd);
+            if (isCAD) {
+                // Convert to CAD
+                const cadPrice = (usdPrice * rate).toFixed(2);
+                el.innerText = "C$" + cadPrice;
+                el.classList.remove('text-success');
+                el.classList.add('text-info'); // Change color to indicate change
+            } else {
+                // Revert to USD
+                el.innerText = "$" + usdPrice;
+                el.classList.add('text-success');
+                el.classList.remove('text-info');
+            }
+        });
+    });
+
+    // Run on load
+    window.onload = toggleReturnDate;
+</script>
 {% endblock %}

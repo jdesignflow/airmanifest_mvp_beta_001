@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS watches;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS settings;
 DROP TABLE IF EXISTS destinations;
+DROP TABLE IF EXISTS system_metrics;
 
 -- User Accounts
 CREATE TABLE users (
@@ -58,7 +59,14 @@ CREATE TABLE settings (
     setting_value VARCHAR(255)
 );
 
--- CMS: Popular Destinations (New!)
+-- System Metrics
+CREATE TABLE system_metrics (
+    metric_key VARCHAR(50) PRIMARY KEY,
+    metric_value INT DEFAULT 0,
+    last_updated DATE
+);
+
+-- CMS: Popular Destinations
 CREATE TABLE destinations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     city VARCHAR(50) NOT NULL,
@@ -68,12 +76,23 @@ CREATE TABLE destinations (
     is_active BOOLEAN DEFAULT TRUE
 );
 
--- Default Settings
+-- Initialize Defaults
 INSERT INTO settings (setting_key, setting_value) VALUES ('provider_mode', 'mock');
+INSERT INTO system_metrics (metric_key, metric_value, last_updated) VALUES ('api_usage_daily', 0, CURRENT_DATE);
 
--- Default Destinations (Seeding the CMS)
-INSERT INTO destinations (city, country, price_estimate, image_url) VALUES 
-('Tokyo', 'Japan', 1200, 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=800&q=80'),
-('Paris', 'France', 850, 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80'),
-('New York', 'USA', 450, 'https://images.unsplash.com/photo-1496442226666-8d4a0e62e6e9?auto=format&fit=crop&w=800&q=80'),
-('Dubai', 'UAE', 920, 'https://images.unsplash.com/photo-1512453979798-5ea932a23518?auto=format&fit=crop&w=800&q=80');
+-- SEED DATA: GUARANTEED WORKING IMAGES
+-- Tokyo
+INSERT INTO destinations (city, country, price_estimate, image_url) 
+VALUES ('Tokyo', 'Japan', 1200, 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=800&auto=format&fit=crop');
+
+-- Paris
+INSERT INTO destinations (city, country, price_estimate, image_url) 
+VALUES ('Paris', 'France', 850, 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop');
+
+-- New York (Updated Link)
+INSERT INTO destinations (city, country, price_estimate, image_url) 
+VALUES ('New York', 'USA', 450, 'https://images.unsplash.com/photo-1496442226666-8d4a0e62e6e9?q=80&w=800&auto=format&fit=crop');
+
+-- Dubai (Updated Link)
+INSERT INTO destinations (city, country, price_estimate, image_url) 
+VALUES ('Dubai', 'UAE', 920, 'https://images.unsplash.com/photo-1512453979798-5ea904acfb5a?q=80&w=800&auto=format&fit=crop');
